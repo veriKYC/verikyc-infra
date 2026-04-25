@@ -1,0 +1,40 @@
+services:
+  verikyc-db:
+    image: postgres:15.3-alpine
+    container_name: verikyc-postgres
+
+    ports:
+    - "5432:5432"
+
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+
+    restart: unless-stopped
+
+    volumes:
+      - verikyc-db-data:/var/lib/postgresql/data
+    
+  verikyc-pgadmin:
+    image: dpage/pgadmin4:9.14
+    container_name: verikyc-pgadmin
+
+    ports:
+      - "5050:80"
+
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+
+    restart: unless-stopped
+
+    depends_on:
+      - verikyc-db
+
+    volumes:
+      - verikyc-pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  verikyc-db-data: 
+  verikyc-pgadmin-data:
