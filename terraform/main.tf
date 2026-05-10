@@ -3,10 +3,8 @@ terraform {
 
     required_providers {
         google = {
-            source = {
-                source = "hashicorp/google"
-                version = "~> 5.0"
-            }
+            source  = "hashicorp/google"
+            version = "~> 5.0"
         }
     }
 
@@ -30,7 +28,7 @@ module "artifact_registry" {
 }
 
 module "iam" {
-    source = "./module/iam"
+    source = "./modules/iam"
     project_id = var.project_id
     github_org = "veriKYC"
 }
@@ -49,7 +47,7 @@ module "backend" {
 
     env_vars = {
         SPRING_PROFILES_ACTIVE = var.environment
-        CV_SERVICE_URL - module.cv_service.service_url
+        CV_SERVICE_URL = module.cv_service.service_url
     }
 
     secret_env_vars = {
