@@ -76,3 +76,16 @@ module "cv_service" {
     allow_unauthenticated = false
     ingress               = "INGRESS_TRAFFIC_INTERNAL_ONLY"
 }
+
+module "cloud_sql" {                                                                                             
+    source     = "./modules/cloud_sql"                                                                             
+    project_id = var.project_id                                                                                    
+    region     = var.region                                                                                        
+                                                                                                                
+    environment       = var.environment                                                                         
+    database_name     = "verikyc_db"
+    database_user     = "verikyc_user"
+    database_password = var.db_password
+    vpc_network       = var.vpc_network
+}
+
