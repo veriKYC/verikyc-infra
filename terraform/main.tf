@@ -8,9 +8,12 @@ terraform {
         }
     }
 
-    backend "gcs" {
-        bucket = "verikyc-terraform-state"
-        prefix = "terraform/state"
+    backend "remote" {
+      organization = "verikyc"
+
+      workspaces {
+        name = "verikyc-infra-dev"
+      }
     }
 }
 
