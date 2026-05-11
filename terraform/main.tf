@@ -82,6 +82,7 @@ module "cloud_sql" {
     source     = "./modules/cloud_sql"                                                                             
     project_id = var.project_id                                                                                    
     region     = var.region                                                                                        
+         
                                                                                                                 
     environment       = var.environment                                                                         
     database_name     = "verikyc_db"
