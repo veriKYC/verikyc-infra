@@ -14,13 +14,4 @@ variable "environment" {
     type = string
 }
 
-variable "db_password" {
-    description = "PostgreSQL user password"
-    type        = string
-    sensitive   = true
-}
-
-variable "vpc_network" {
-    description = "VPC network self-link for Cloud SQL private IP"
-    type        = string
-}
+# db_password and vpc_network removed — Cloud SQL managed outside Terraform for now

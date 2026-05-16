@@ -11,8 +11,19 @@ resource "google_cloud_run_v2_service" "service" {
             max_instance_count = var.max_instances
         }
 
+        dynamic "volumes" {
+            for_each = var.gcs_model_bucket != "" ? [1] : []
+            content {
+                name = "models"
+                gcs {
+                    bucket    = var.gcs_model_bucket
+                    read_only = true
+                }
+            }
+        }
+
         containers {
-            image = var.image
+            image = var.image  # Initial value only — CI/CD owns the image after first deploy
 
             resources {
                 limits = {
@@ -41,7 +52,23 @@ resource "google_cloud_run_v2_service" "service" {
                     }
                 }
             }
+
+            dynamic "volume_mounts" {
+                for_each = var.gcs_model_bucket != "" ? [1] : []
+                content {
+                    name       = "models"
+                    mount_path = "/models"
+                }
+            }
         }
+    }
+
+    lifecycle {
+        ignore_changes = [
+            template[0].containers[0].image,
+            client,
+            client_version,
+        ]
     }
 }
 
