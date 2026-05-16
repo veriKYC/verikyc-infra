@@ -1,8 +1,8 @@
 # Service account for GitHub Actions CI/CD
 resource "google_service_account" "github_actions" {
-    account_id = "github-actions-sa"
+    account_id   = "github-actions-sa"
     display_name = "GitHub Action Service Account"
-    project = var.project_id
+    project      = var.project_id
 }
 
 # Workload Identity Pool — trusts GitHub's OIDC tokens
@@ -23,16 +23,20 @@ resource "google_iam_workload_identity_pool_provider" "github" {
     }
 
     attribute_mapping = {
-        "google.subject"       = "assertion.sub"
-        "attribute.repository" = "assertion.repository"
+        "google.subject"             = "assertion.sub"
+        "attribute.repository"       = "assertion.repository"
+        "attribute.repository_owner" = "assertion.repository_owner"
     }
+
+    # Restrict to tokens from the veriKYC GitHub organisation only
+    attribute_condition = "attribute.repository_owner == \"${var.github_org}\""
 }
 
-# Allow GitHub Actions (from your org) to impersonate the service account
+# Allow any repo in the veriKYC org to impersonate the service account
 resource "google_service_account_iam_member" "github_wif" {
     service_account_id = google_service_account.github_actions.name
     role               = "roles/iam.workloadIdentityUser"
-    member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/veriKYC/repo-verify-backend"
+    member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository_owner/${var.github_org}"
 }
 
 # Grant service account permissions it needs

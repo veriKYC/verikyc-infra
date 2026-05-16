@@ -58,3 +58,9 @@ variable "secret_env_vars" {
     type        = map(object({ secret = string, version = string }))
     default     = {}
 }
+
+variable "gcs_model_bucket" {                                                                                                                                                     
+    description = "GCS bucket for model volume mount. Empty string = no mount."                                                                                                     
+    type        = string                                                                                                                                                        
+    default     = ""
+  }
